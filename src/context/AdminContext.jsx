@@ -1,25 +1,41 @@
 // src/context/AdminContext.jsx
 import { createContext, useState, useEffect } from "react";
+import { supabase } from "../lib/supabaseClient";
 
-export const AdminContext = createContext(false);
+export const AdminContext = createContext();
 
 export const AdminProvider = ({ children }) => {
   const [isAdmin, setIsAdmin] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  const ADMIN_USERNAME = import.meta.env.VITE_ADMIN_USERNAME;
   const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD;
 
   useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const password = urlParams.get("adminPass") || "";
-    if (password === ADMIN_PASSWORD) {
+    // Check local storage for session
+    const session = localStorage.getItem("adminSession");
+    if (session === "true") {
       setIsAdmin(true);
-      // Remove password from URL
-      const newUrl = window.location.origin + window.location.pathname;
-      window.history.replaceState({}, document.title, newUrl);
     }
+    setLoading(false);
   }, []);
 
+  const login = (username, password) => {
+    if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+      setIsAdmin(true);
+      localStorage.setItem("adminSession", "true");
+      return true;
+    }
+    return false;
+  };
+
+  const logout = () => {
+    setIsAdmin(false);
+    localStorage.removeItem("adminSession");
+  };
+
   return (
-    <AdminContext.Provider value={isAdmin}>
+    <AdminContext.Provider value={{ isAdmin, login, logout, loading }}>
       {children}
     </AdminContext.Provider>
   );

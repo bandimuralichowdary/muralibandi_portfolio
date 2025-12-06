@@ -1,21 +1,34 @@
 // src/App.jsx
-import Navbar from "./components/Navbar";
-import Hero from "./components/Hero";
-import Projects from "./components/Projects";
-import Skills from "./components/Skills";
-import Contact from "./components/Contact";
-import { AdminProvider } from "./context/AdminContext";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import Home from "./components/Home";
+import Login from "./components/admin/Login";
+import AdminDashboard from "./components/admin/AdminDashboard";
+import { AdminProvider, AdminContext } from "./context/AdminContext";
+import { useContext } from "react";
+
+const ProtectedRoute = ({ children }) => {
+  const { isAdmin, loading } = useContext(AdminContext);
+  if (loading) return null; // Or a loading spinner
+  return isAdmin ? children : <Navigate to="/admin" />;
+};
 
 function App() {
   return (
     <AdminProvider>
-      <Navbar />
-      <div className="scroll-container overflow-y-scroll scroll-smooth snap-y snap-mandatory h-screen overflow-x-hidden ">
-        <div className="snap-start" id="hero"><Hero /></div>
-        <div className="snap-start" id="projects"><Projects /></div>
-        <div className="snap-start" id="skills"><Skills /></div>
-        <div className="snap-start" id="contact"><Contact /></div>
-      </div>
+      <Router>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/admin" element={<Login />} />
+          <Route
+            path="/admin/dashboard"
+            element={
+              <ProtectedRoute>
+                <AdminDashboard />
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+      </Router>
     </AdminProvider>
   );
 }

@@ -47,29 +47,30 @@ export default function Navbar() {
 
   return (
     <motion.nav
-      className="fixed top-0 left-0 w-full z-50 backdrop-blur-3xl bg-white/10 dark:bg-gray-900/30 transition-all duration-300"
-      animate={{
-        height: isScrolled ? 60 : 80,
-        boxShadow: isScrolled
-          ? "0 10px 30px rgba(0,0,0,0.2)"
-          : "0 0px 0px rgba(0,0,0,0)",
+      className="fixed top-4 left-1/2 -translate-x-1/2 w-[95%] max-w-6xl z-50 rounded-2xl transition-all duration-300 border border-white/5"
+      style={{
+        background: isScrolled ? "rgba(5, 5, 16, 0.6)" : "transparent",
+        backdropFilter: isScrolled ? "blur(12px)" : "none",
+        height: isScrolled ? 70 : 90,
+        boxShadow: isScrolled ? "0 8px 32px rgba(0, 0, 0, 0.2)" : "none",
       }}
     >
       <div className="max-w-6xl mx-auto flex justify-center items-center px-6 h-full">
-        
+
         {/* DESKTOP NAV — CENTERED */}
         <ul className="hidden md:flex gap-10">
           {links.map((link) => (
             <li key={link.id}>
               <button
                 onClick={() => handleLinkClick(link.id)}
-                className={`relative px-2 py-1 text-lg font-semibold text-white transition-all hover:text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-500 to-indigo-500`}
+                className={`relative px-4 py-2 text-sm uppercase tracking-widest font-medium transition-all duration-300
+                  ${activeSection === link.id ? "text-white" : "text-gray-400 hover:text-white"}`}
               >
                 {link.label}
                 {activeSection === link.id && (
                   <motion.div
                     layoutId="highlight"
-                    className="absolute inset-0 rounded-md bg-gradient-to-r from-purple-400 via-pink-500 to-indigo-400/20 -z-10"
+                    className="absolute inset-0 rounded-full bg-white/10 border border-white/5 shadow-[0_0_15px_rgba(139,92,246,0.3)] -z-10"
                     transition={{ type: "spring", stiffness: 300, damping: 30 }}
                   />
                 )}
@@ -93,27 +94,26 @@ export default function Navbar() {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            className="fixed inset-0 bg-black/50 z-40 flex justify-center items-center"
+            className="fixed inset-0 bg-black/50 z-40 flex justify-center items-start pt-24"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
-            <ul className="flex flex-col gap-6 bg-white/10 backdrop-blur-3xl p-10 rounded-3xl shadow-2xl">
+            <ul className="flex flex-col gap-4 bg-white/10 backdrop-blur-3xl p-6 rounded-2xl shadow-2xl w-[85%] max-w-sm">
               {links.map((link, index) => (
                 <motion.li
                   key={link.id}
-                  initial={{ x: -50, opacity: 0 }}
+                  initial={{ x: -40, opacity: 0 }}
                   animate={{ x: 0, opacity: 1 }}
-                  exit={{ x: -50, opacity: 0 }}
+                  exit={{ x: -40, opacity: 0 }}
                   transition={{ delay: index * 0.05 }}
                 >
                   <button
                     onClick={() => handleLinkClick(link.id)}
-                    className={`text-3xl font-bold transition-colors ${
-                      activeSection === link.id
+                    className={`text-2xl font-bold transition-colors ${activeSection === link.id
                         ? "text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-500 to-indigo-500"
                         : "text-white"
-                    }`}
+                      }`}
                   >
                     {link.label}
                   </button>

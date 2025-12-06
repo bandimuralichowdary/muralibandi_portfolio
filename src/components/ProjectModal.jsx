@@ -1,52 +1,79 @@
 import { motion } from "framer-motion";
+import { FaGithub, FaExternalLinkAlt, FaTimes } from "react-icons/fa";
 
 export default function ProjectModal({ project, onClose }) {
+  if (!project) return null;
+
   return (
     <motion.div
-      className="fixed inset-0 bg-black/70 flex justify-center items-center z-50"
+      className="fixed inset-0 bg-black/80 backdrop-blur-sm flex justify-center items-center z-50 p-4"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       onClick={onClose}
     >
       <motion.div
-        className="glass-card p-8 max-w-lg w-full rounded-3xl shadow-2xl relative backdrop-blur-3xl border border-white/20"
-        initial={{ scale: 0.8 }}
-        animate={{ scale: 1 }}
-        exit={{ scale: 0.8 }}
+        className="glass-card w-full max-w-md rounded-3xl shadow-2xl relative overflow-hidden border border-white/10 bg-gray-900/50"
+        initial={{ scale: 0.9, y: 20 }}
+        animate={{ scale: 1, y: 0 }}
+        exit={{ scale: 0.9, y: 20 }}
         onClick={(e) => e.stopPropagation()}
       >
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 text-white font-bold hover:text-red-400 transition-all"
-        >
-          X
-        </button>
-        <h3 className="text-3xl font-bold mb-4 text-white drop-shadow-md">{project.title}</h3>
-        <p className="mb-4 text-white/90">{project.description}</p>
-        <div className="mb-4 flex flex-wrap gap-2">
-          {project.skills.map((skill, i) => (
-            <span key={i} className="bg-purple-500/20 text-purple-200 px-3 py-1 rounded-full text-sm backdrop-blur-md">
-              {skill}
-            </span>
-          ))}
+        {/* Header */}
+        <div className="p-6 border-b border-white/10 flex justify-between items-start">
+          <div>
+            <h3 className="text-2xl font-bold text-white mb-2">{project.title}</h3>
+            <div className="flex flex-wrap gap-2">
+              {(project.tags || []).map((tag, i) => (
+                <span key={i} className="text-xs font-medium px-2 py-1 rounded-md bg-purple-500/20 text-purple-300 border border-purple-500/10">
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </div>
+          <button
+            onClick={onClose}
+            className="text-gray-400 hover:text-white transition-colors p-1"
+          >
+            <FaTimes size={20} />
+          </button>
         </div>
-        <div className="flex gap-4">
-          {project.github && (
-            <a href={project.github} target="_blank" rel="noopener noreferrer" className="text-white bg-gray-800 px-4 py-2 rounded-xl hover:bg-gray-900 transition">
-              GitHub
-            </a>
-          )}
-          {project.live && (
-            <a href={project.live} target="_blank" rel="noopener noreferrer" className="text-white bg-blue-600 px-4 py-2 rounded-xl hover:bg-blue-700 transition">
-              Live
-            </a>
-          )}
-          {project.documentation && (
-            <a href={project.documentation} target="_blank" rel="noopener noreferrer" className="text-white bg-green-600 px-4 py-2 rounded-xl hover:bg-green-700 transition">
-              Docs
-            </a>
-          )}
+
+        {/* Body */}
+        <div className="p-6 space-y-6">
+          <p className="text-gray-300 leading-relaxed text-sm">
+            {project.description}
+          </p>
+
+          {/* Actions */}
+          <div className="grid gap-3">
+            {project.link && (
+              <a
+                href={project.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white font-bold shadow-lg transition-all transform hover:scale-[1.02]"
+              >
+                <FaExternalLinkAlt /> Visit Live Site
+              </a>
+            )}
+
+            {project.github_link && (
+              <a
+                href={project.github_link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-white font-semibold transition-all"
+              >
+                <FaGithub size={18} /> View Source Code
+              </a>
+            )}
+
+            {/* Fallback if no links */}
+            {!project.link && !project.github_link && (
+              <p className="text-center text-gray-500 text-sm italic">No links available for this project.</p>
+            )}
+          </div>
         </div>
       </motion.div>
     </motion.div>

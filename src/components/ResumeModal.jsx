@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 
-export default function ResumeModal({ close }) {
+export default function ResumeModal({ close, resumeUrl }) {
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex justify-center items-center z-50">
       <motion.div
@@ -17,7 +17,7 @@ export default function ResumeModal({ close }) {
         </button>
 
         <iframe
-          src="/Murali_Resume.pdf"
+          src={resumeUrl}
           className="w-full h-full rounded-xl"
           title="Resume Viewer"
         ></iframe>
